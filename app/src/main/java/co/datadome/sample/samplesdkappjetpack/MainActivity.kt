@@ -1,15 +1,14 @@
 package co.datadome.sample.samplesdkappjetpack
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,21 +29,18 @@ import retrofit2.Call
 class MainActivity : ComponentActivity() {
 
     private val dataDomeViewModel: DataDomeViewModel by viewModels<DataDomeViewModel>()
-    //private var response = mutableStateOf("")
+//    private var response = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SampleSDKAppJetPackTheme {
-                var response = remember {
-                    mutableStateOf("")
-                }
+                var response = dataDomeViewModel.data
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //Greeting()
                     Column(
                         // on below line we are adding a modifier to it
                         // and setting max size, max height and max width
@@ -62,10 +58,7 @@ class MainActivity : ComponentActivity() {
                         // on below line we are creating a button
                         Button(
                             onClick = {
-                                // on below line we are calling make payment method to update data.
-                                response.value = dataDomeViewModel.data.value
-                               // response = dataDomeViewModel.data
-                                Log.d("Response", response.value)
+                                dataDomeViewModel.onLoadData()
                             },
                             // on below line we are adding modifier to our button.
                             modifier = Modifier
@@ -87,6 +80,23 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
+                        // on below line we are adding spacer
+                        Spacer(modifier = Modifier.height(20.dp))
+                        // on below line we are creating a button
+                        Button(
+                            onClick = {
+                                PreferenceManager.getDefaultSharedPreferences(applicationContext).edit().clear().apply()
+                                runOnUiThread { Toast.makeText(this@MainActivity, "Cookie storage cleared", Toast.LENGTH_SHORT).show() }
+                            },
+                            // on below line we are adding modifier to our button.
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
+                        ) {
+                            // on below line we are adding text for our button
+                            Text(text = "Clear cookie", modifier = Modifier.padding(8.dp))
+                        }
                     }
                 }
             }

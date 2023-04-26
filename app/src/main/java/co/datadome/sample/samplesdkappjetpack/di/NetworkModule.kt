@@ -15,6 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.google.gson.GsonBuilder
+import okhttp3.logging.HttpLoggingInterceptor
 
 
 @Module
@@ -26,8 +27,12 @@ object NetworkModule {
         val dataDomeSDK = DataDomeSDK.with(application, "Client_Side_Key", BuildConfig.VERSION_NAME)
             .activateDatadomeLogger(true)
 
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+
         return OkHttpClient().newBuilder()
             .addInterceptor( DataDomeInterceptor(application, dataDomeSDK))
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 

@@ -75,4 +75,6 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle_viewmodel"
 
     implementation 'co.datadome.sdk:sdk:1.8.1'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 }
